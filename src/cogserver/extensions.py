@@ -29,14 +29,14 @@ class createMosaicJsonExtension(FactoryExtension):
     # Register method is mandatory and must take a BaseTilerFactory object as input
     def register(self, factory: BaseTilerFactory):
         @factory.router.get(
-            "/create",
+            "/build",
             response_model=MosaicJSON,
             response_model_exclude_none=True,
             response_class=JSONResponse,
             responses={
                 200: {"description": "Return a MosaicJSON from multiple COGs."}},
         )
-        def create_mosaicJSON(
+        def build_mosaicJSON(
                 url = Depends(SignedDatasetPaths),
                 minzoom: Optional[int] = 0,
                 maxzoom: Optional[int] = 22,
@@ -46,14 +46,14 @@ class createMosaicJsonExtension(FactoryExtension):
             return self.create_mosaic_json(urls=url, minzoom=minzoom, maxzoom=maxzoom, attribution=attribution)
 
         @factory.router.post(
-            "/create",
+            "/build",
             response_model=MosaicJSON,
             response_model_exclude_none=True,
             response_class=JSONResponse,
             responses={
                 200: {"description": "Return a MosaicJSON from multiple COGs."}},
         )
-        def create_mosaicJSON(payload: MosaicJsonCreateItem):
+        def build_mosaicJSON(payload: MosaicJsonCreateItem):
             url = SignedDatasetPaths(payload.urls)
             minzoom = payload.minzoom
             maxzoom = payload.maxzoom
