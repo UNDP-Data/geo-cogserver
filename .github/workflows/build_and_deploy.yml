@@ -16,8 +16,8 @@ jobs:
       packages: write
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+#      - name: Checkout repository
+#        uses: actions/checkout@v2
 
       - name: Log in to the Container registry
         uses: docker/login-action@v3
@@ -33,10 +33,13 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
+
           context: .
           file: Dockerfile
           push: ${{ github.ref == 'refs/heads/main'}}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          secret-files: |
+            "GDAL_RIO=../gdal_rio.env"
