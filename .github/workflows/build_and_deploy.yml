@@ -6,7 +6,7 @@ on:
   pull_request:
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: cogserver
 
 jobs:
   build-and-push-image:
@@ -14,7 +14,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-
 
     steps:
       - name: Checkout repository
@@ -32,9 +31,6 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
-#      - name: Copy .env file
-#        run: cp "gdal_rio.env" gdal_rio.env
 
       - name: Read gdal_rio.env file and set environment variables
         run: |

@@ -13,8 +13,8 @@ services:
     # Enable the following volumes if you want to mount source code to Docker
     # volumes:
       # - "./app/wmts.py:/opt/wmts/wmts.py"
-#    env_file:
-#      - gdal_rio.env
+    env_file:
+      - gdal_rio.env
     ports:
       - 8000:80
 #    environment:
