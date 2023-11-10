@@ -34,13 +34,13 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Copy .env file
-        run: cp "gdal_rio.env" .env
+        run: cp "gdal_rio.env" gdal_rio.env
 
       - name: Read .env file and set environment variables
         run: |
           while IFS= read -r line; do
             export $(echo "$line" | grep -v '^#' | xargs)
-          done < .env
+          done < gdal_rio.env
           
 
       - name: Build and push Docker image
