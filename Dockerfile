@@ -12,4 +12,6 @@ RUN pipenv run pip install uvicorn titiler asyncpg postgis --no-cache-dir  --upg
 
 
 COPY src/cogserver cogserver
+COPY gdal_rio.env .
+
 CMD pipenv run uvicorn cogserver:app --host ${HOST} --port ${PORT}
