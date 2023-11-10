@@ -6,7 +6,7 @@ on:
   pull_request:
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: ${{ github.repository_owner }}/cogserver
 
 jobs:
   build-and-push-image:
@@ -15,9 +15,10 @@ jobs:
       contents: read
       packages: write
 
+
     steps:
-#      - name: Checkout repository
-#        uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Log in to the Container registry
         uses: docker/login-action@v3
@@ -32,6 +33,16 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
+#      - name: Copy .env file
+#        run: cp "gdal_rio.env" gdal_rio.env
+
+      - name: Read gdal_rio.env file and set environment variables
+        run: |
+          while IFS= read -r line; do
+            export $(echo "$line" | grep -v '^#' | xargs)
+          done < gdal_rio.env
+          
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -41,5 +52,3 @@ jobs:
           push: ${{ github.ref == 'refs/heads/main'}}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          secret-files: |
-            "GDAL_RIO=../gdal_rio.env"
