@@ -33,10 +33,10 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - name: Copy .env file
-        run: cp "gdal_rio.env" gdal_rio.env
+#      - name: Copy .env file
+#        run: cp "gdal_rio.env" gdal_rio.env
 
-      - name: Read .env file and set environment variables
+      - name: Read gdal_rio.env file and set environment variables
         run: |
           while IFS= read -r line; do
             export $(echo "$line" | grep -v '^#' | xargs)
