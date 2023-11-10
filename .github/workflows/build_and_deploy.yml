@@ -41,5 +41,6 @@ jobs:
           push: ${{ github.ref == 'refs/heads/main'}}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          secret-files: |
-            "GDAL_RIO=../gdal_rio.env"
+          build-args: env_file=../gdal_rio.env
+#          secret-files: |
+#            "GDAL_RIO=../gdal_rio.env"
