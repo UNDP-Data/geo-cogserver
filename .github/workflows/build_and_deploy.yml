@@ -31,7 +31,11 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
+      - name: Read .env file and set environment variables
+        run: |
+          while IFS= read -r line; do
+            export $(echo "$line" | grep -v '^#' | xargs)
+          done < ../gdal_rio.env
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -41,6 +45,3 @@ jobs:
           push: ${{ github.ref == 'refs/heads/main'}}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: env_file=../gdal_rio.env
-#          secret-files: |
-#            "GDAL_RIO=../gdal_rio.env"
