@@ -17,8 +17,8 @@ jobs:
 
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+#      - name: Checkout repository
+#        uses: actions/checkout@v4
 
       - name: Log in to the Container registry
         uses: docker/login-action@v3
@@ -36,11 +36,12 @@ jobs:
 #      - name: Copy .env file
 #        run: cp "gdal_rio.env" gdal_rio.env
 
-      - name: Read gdal_rio.env file and set environment variables
-        run: |
-          while IFS= read -r line; do
-            export $(echo "$line" | grep -v '^#' | xargs)
-          done < gdal_rio.env
+#      - name: Read gdal_rio.env file and set environment variables
+#        run: |
+#          while IFS= read -r line;
+#          do
+#            export $(echo "$line" | grep -v '^#' | xargs)
+#          done < gdal_rio.env
           
 
       - name: Build and push Docker image
