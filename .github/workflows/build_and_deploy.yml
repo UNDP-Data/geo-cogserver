@@ -50,5 +50,5 @@ jobs:
           context: .
           file: Dockerfile
           push: ${{ github.ref == 'refs/heads/main'}}
-          tags: ghcr.io/${{ github.repository_owner }}/cogserver:${{ steps.tag.outputs.tag }}
+          tags: ${{ steps.tag.outputs.tag }}
           labels: ${{ steps.meta.outputs.labels }}
