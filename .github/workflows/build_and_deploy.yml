@@ -42,6 +42,16 @@ jobs:
           file: Dockerfile
           push: ${{ github.ref == 'refs/heads/main'}}
           tags: | 
-            ${{ steps.meta.outputs.tag }}
+            ${{ steps.meta.outputs.tags }}
 
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: true
