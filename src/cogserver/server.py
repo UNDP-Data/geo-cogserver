@@ -72,19 +72,19 @@ app.include_router(mosaic.router, prefix="/mosaicjson", tags=["MosaicJSON"])
 
 ############################# STAC #######################################
 # STAC endpoints
-if not api_settings.disable_stac:
-    stac = MultiBaseTilerFactory(
-        reader=STACReader,
-        router_prefix="/stac",
-        extensions=[
-            #stacViewerExtension(),
-        ],
-        path_dependency=SignedDatasetPath,
-    )
 
-    app.include_router(
-        stac.router, prefix="/stac", tags=["SpatioTemporal Asset Catalog"]
-    )
+stac = MultiBaseTilerFactory(
+    reader=STACReader,
+    router_prefix="/stac",
+    extensions=[
+        #stacViewerExtension(),
+    ],
+    path_dependency=SignedDatasetPath,
+)
+
+app.include_router(
+    stac.router, prefix="/stac", tags=["SpatioTemporal Asset Catalog"]
+)
 
 ###############################################################################
 
