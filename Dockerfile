@@ -7,7 +7,9 @@ RUN python3 -m pip install pipenv
 WORKDIR /opt/server
 RUN export PYTHON_VERSION="$(python3 --version | cut -d ' ' -f 2)" && pipenv --python ${PYTHON_VERSION}
 RUN pipenv run pip install -U pip
-RUN pipenv run pip install uvicorn titiler asyncpg postgis --no-cache-dir  --upgrade
+#RUN pipenv run pip install uvicorn titiler asyncpg postgis --no-cache-dir  --upgrade
+COPY requirements.txt requirements.txt
+RUN pipenv run pip install -r requirements.txt
 COPY src/cogserver cogserver
 ENV HOST=0.0.0.0
 ENV PORT=80

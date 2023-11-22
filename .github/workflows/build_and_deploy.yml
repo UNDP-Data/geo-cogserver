@@ -3,7 +3,9 @@ name: Build, publish and deploy
 on:
   push:
     branches: ['main']
-  pull_request:
+    tags:
+      - 'v*'
+  #pull_request:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository_owner }}/cogserver
@@ -37,5 +39,17 @@ jobs:
           context: .
           file: Dockerfile
           push: ${{ github.ref == 'refs/heads/main'}}
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: | 
+            ${{ steps.meta.outputs.tags }}
+
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: true

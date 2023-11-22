@@ -1,0 +1,5 @@
+titiler==0.15.5
+asyncpg==0.29.0
+postgis==1.0.4
+uvicorn==0.23.2
+
