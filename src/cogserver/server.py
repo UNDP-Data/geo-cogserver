@@ -1,14 +1,16 @@
 from titiler.application import main as default
 from cogserver.dependencies import SignedDatasetPath
+from rio_tiler.io import STACReader
 import logging
 from fastapi import FastAPI
-from titiler.core.factory import TilerFactory, MultiBandTilerFactory
+from titiler.core.factory import TilerFactory, MultiBandTilerFactory, MultiBaseTilerFactory
 from titiler.application import __version__ as titiler_version
 from cogserver.landing import setup_landing
 from starlette.middleware.cors import CORSMiddleware
 from titiler.mosaic.factory import MosaicTilerFactory
 from titiler.core.errors import DEFAULT_STATUS_CODES, add_exception_handlers
 from titiler.mosaic.errors import MOSAIC_STATUS_CODES
+from titiler.extensions.stac import stacExtension
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -46,7 +48,7 @@ cog = TilerFactory(
     extensions=[
         # cogValidateExtension(),
         # cogViewerExtension(),
-        # stacExtension(),
+        stacExtension(),
     ],
     path_dependency=SignedDatasetPath
 )
@@ -67,6 +69,25 @@ app.include_router(mosaic.router, prefix="/mosaicjson", tags=["MosaicJSON"])
 
 
 ###############################################################################
+
+############################# STAC #######################################
+# STAC endpoints
+if not api_settings.disable_stac:
+    stac = MultiBaseTilerFactory(
+        reader=STACReader,
+        router_prefix="/stac",
+        extensions=[
+            #stacViewerExtension(),
+        ],
+        path_dependency=SignedDatasetPath,
+    )
+
+    app.include_router(
+        stac.router, prefix="/stac", tags=["SpatioTemporal Asset Catalog"]
+    )
+
+###############################################################################
+
 
 ############################# MultiBand #######################################
 
