@@ -1,11 +1,13 @@
 name: Build, publish and deploy
 
 on:
-  push:
-    branches: ['main']
+#  push:
+#    branches: ['main']
+#    tags:
+#      - 'v*'
+  pull_request:
     tags:
       - 'v*'
-  #pull_request:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository_owner }}/cogserver
@@ -14,7 +16,7 @@ jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
     steps:
       - name: Checkout repository
@@ -46,7 +48,7 @@ jobs:
 
       - name: Create release
         id: create_release
-        uses: actions/create-release@latest
+        uses: ncipollo/release-action@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
