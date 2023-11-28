@@ -43,8 +43,10 @@ jobs:
             ${{ steps.meta.outputs.tags }}
 
           labels: ${{ steps.meta.outputs.labels }}
+
       - name: Dump tags
         run: echo "${{ steps.meta.outputs.tags }}"
+
       - name: Create release
         if: ${{ steps.meta.outputs.tags  != null }}
         id: create_release
