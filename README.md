@@ -41,7 +41,8 @@ a) pushing tags
           git tag -d v0.0.1 #local
        ```
 b) creating a release manually using Github
-
+    1. open release page
+    2. 
 
 
 
