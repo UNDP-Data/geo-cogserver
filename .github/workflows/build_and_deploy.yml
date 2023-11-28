@@ -57,5 +57,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag: ${{ steps.meta.outputs.tags  }}
+          tag: ${{ github.ref_name  }}
           generateReleaseNotes: true
