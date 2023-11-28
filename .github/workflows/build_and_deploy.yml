@@ -46,8 +46,8 @@ jobs:
 
       - name: Dump tags
         run: | 
-          - echo "${{ steps.meta.outputs.tags }}"
-          - echo "Tga is proper {{ startsWith(steps.meta.outputs.tags, 'v') }}"
+          echo "${{ steps.meta.outputs.tags }}"
+          echo "Tga is proper {{ startsWith(steps.meta.outputs.tags, 'v') }}"
 
       - name: Create release
         if: ${{ startsWith(steps.meta.outputs.tags, 'v') }}
