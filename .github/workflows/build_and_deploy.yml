@@ -47,10 +47,10 @@ jobs:
       - name: Dump tags
         run: | 
           echo "${{ steps.meta.outputs.tags }}"
-          echo "Tag is proper ${{ startsWith(steps.meta.outputs.tags, 'v') }}"
+          echo "Tag is proper ${{ contains(steps.meta.outputs.tags, ':v.') }}"
 
       - name: Create release
-        if: ${{ startsWith(steps.meta.outputs.tags, 'v') }}
+        if: ${{ contains(steps.meta.outputs.tags, ':v.') }}
         id: create_release
         uses: ncipollo/release-action@v1.13.0
         env:
