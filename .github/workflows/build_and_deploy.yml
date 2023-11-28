@@ -43,9 +43,9 @@ jobs:
             ${{ steps.meta.outputs.tags }}
 
           labels: ${{ steps.meta.outputs.labels }}
-
+      - name: Dump tags
+        run: echo "${{ steps.meta.outputs.tags }}"
       - name: Create release
-        run: echo ${{ steps.meta.outputs.tags }}
         if: ${{ steps.meta.outputs.tags  != null }}
         id: create_release
         uses: ncipollo/release-action@v1.13.0
