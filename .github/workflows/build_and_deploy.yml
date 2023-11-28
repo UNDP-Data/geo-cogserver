@@ -44,12 +44,17 @@ jobs:
 
           labels: ${{ steps.meta.outputs.labels }}
 
-#      - name: Create release
-#        id: create_release
-#        uses: ncipollo/release-action@latest
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          tag_name: ${{ github.ref }}
-#          release_name: ${{ github.ref }}
-#          draft: true
+      - name: Dump tags
+        run: | 
+          echo "${{ steps.meta.outputs.tags }}"
+          echo "Tag is proper ${{ startsWith(steps.meta.outputs.tags, 'v') }}"
+
+      - name: Create release
+        if: ${{ startsWith(steps.meta.outputs.tags, 'v') }}
+        id: create_release
+        uses: ncipollo/release-action@v1.13.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag: ${{ steps.meta.outputs.tags  }}
+          generateReleaseNotes: true
