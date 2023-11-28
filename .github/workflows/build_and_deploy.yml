@@ -62,3 +62,4 @@ jobs:
           tag: ${{ github.ref_name  }}
           generateReleaseNotes: true
           draft: false
+          skipIfReleaseExists: true
