@@ -60,4 +60,4 @@ jobs:
         with:
           tag: ${{ github.ref_name  }}
           generateReleaseNotes: true
-          draft: false
+          #draft: false
