@@ -47,6 +47,7 @@ jobs:
       - name: Dump tags
         run: | 
           echo "${{ steps.meta.outputs.tags }}"
+          echo "${{ github.ref_name }}"
           echo "Tag is proper ${{ contains(steps.meta.outputs.tags, ':v') }}"
 
       - name: Create release
