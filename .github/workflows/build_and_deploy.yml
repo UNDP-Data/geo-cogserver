@@ -56,3 +56,16 @@ jobs:
           generateReleaseNotes: true
           draft: false
           skipIfReleaseExists: true
+
+      # This job is going to trigger an event named `bump-cogserver-version`
+      # on undp-data/geohub repo in order to make a PR to bump version of cogserver to AKS
+      - name: dispatch event to GeoHub repo to create release PR
+        uses: peter-evans/repository-dispatch@v1
+        if: ${{ contains(steps.meta.outputs.tags, ':v') }}
+        with:
+          repository: undp-data/geohub
+          # https://www.eliostruyf.com/dispatch-github-action-fine-grained-personal-access-token/
+          # need scopes of metadata and contents
+          # created `geohub-data-pipeline-bump` token which will be expired on 17 November 2024
+          token: ${{ secrets.GEOHUB_REPO_DISPATCH_TOKEN }}
+          event-type: bump-cogserver-version
