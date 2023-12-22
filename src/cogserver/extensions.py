@@ -11,7 +11,7 @@ from pydantic import BaseModel
 urls = Annotated[List[str], Query(..., description="Dataset URLs")]
 class MosaicJsonCreateItem(BaseModel):
     #url: List[str] = Query(..., description="Dataset URL")
-    url:List[str] = urls
+    urls:List[str] = urls
     minzoom: int = 0
     maxzoom: int = 22
     attribution: str = None
