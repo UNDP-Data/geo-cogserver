@@ -27,4 +27,4 @@ ENV RIO_TILER_MAX_THREADS=2
 
 
 
-CMD pipenv run uvicorn cogserver:app --host ${HOST} --port ${PORT}
+CMD pipenv run uvicorn cogserver:app --host ${HOST} --port ${PORT} --log-config cogserver/logconf.yaml

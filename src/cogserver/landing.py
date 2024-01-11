@@ -1,18 +1,18 @@
-import os.path
-import jinja2
+import os
 import titiler
-from titiler.application import main as default
+import jinja2
 from fastapi import Request
 from starlette.templating import Jinja2Templates
 from starlette.responses import HTMLResponse
 import logging
 
-logging.basicConfig()
 logger = logging.getLogger(__name__)
-templates = Jinja2Templates(
-    directory="",
-    loader=jinja2.ChoiceLoader([jinja2.PackageLoader(__package__, package_path=os.path.join(os.path.dirname(titiler.application.__file__), 'templates'))]),
-)  # type:ignore
+
+jinja2_env = jinja2.Environment(
+    loader=jinja2.ChoiceLoader([jinja2.PackageLoader(__package__, package_path=os.path.join(os.path.dirname(titiler.application.__file__), 'templates'))])
+)
+templates = Jinja2Templates(env=jinja2_env)
+
 
 
 
