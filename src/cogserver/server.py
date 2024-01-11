@@ -12,10 +12,8 @@ from titiler.core.errors import DEFAULT_STATUS_CODES, add_exception_handlers
 from titiler.mosaic.errors import MOSAIC_STATUS_CODES
 from titiler.extensions.stac import stacExtension
 
-logging.basicConfig()
+
 logger = logging.getLogger(__name__)
-
-
 
 api_settings = default.api_settings
 
