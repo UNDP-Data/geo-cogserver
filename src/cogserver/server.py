@@ -3,7 +3,7 @@ from cogserver.dependencies import SignedDatasetPath
 from rio_tiler.io import STACReader
 import logging
 from fastapi import FastAPI
-from titiler.core.factory import TilerFactory, MultiBandTilerFactory, MultiBaseTilerFactory
+from titiler.core.factory import TilerFactory, MultiBandTilerFactory, MultiBaseTilerFactory, AlgorithmFactory
 from titiler.application import __version__ as titiler_version
 from cogserver.landing import setup_landing
 from starlette.middleware.cors import CORSMiddleware
@@ -97,7 +97,13 @@ app.include_router(
 
 ############################# Algorithms ######################################
 
+# Algorithms endpoints
 
+algorithms = AlgorithmFactory()
+
+app.include_router(
+    algorithms.router, tags=["Algorithms"]
+)
 
 
 ###############################################################################
