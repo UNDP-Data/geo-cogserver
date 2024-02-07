@@ -7,9 +7,12 @@ services:
     # enable `image` if you would like to use Docker image from Github package
     # image: ghcr.io/undp-data/titiler-aks:v0.0.2
     # enable `build` if you would like to build Docker image from source code
+    image: undpgeohub.azurecr.io/cogserver-debug
     build:
       context: .
 
+
+    container_name: cogserver
     # Enable the following volumes if you want to mount source code to Docker
     # volumes:
       # - "./app/wmts.py:/opt/wmts/wmts.py"
@@ -21,5 +24,6 @@ services:
 #      # Application
 #      - HOST=0.0.0.0
 #      - PORT=8000
+
 
 

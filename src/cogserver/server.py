@@ -116,6 +116,10 @@ app.include_router(
 
 ###############################################################################
 
+@app.get("/health", description="Health Check", tags=["Health Check"])
+def ping():
+    """Health check."""
+    return {"ping": "pong!"}
 
 setup_landing(app)
 
