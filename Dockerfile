@@ -24,8 +24,8 @@ COPY src/cogserver cogserver
 #ENV PYTHONWARNINGS=ignore
 #ENV VSI_CACHE=FALSE
 #ENV RIO_TILER_MAX_THREADS=2
-
+ENV LOG_LEVEL=info
 
 
 #CMD pipenv run uvicorn cogserver:app --host ${HOST} --port ${PORT} --log-config cogserver/logconf.yaml
-CMD pipenv run uvicorn cogserver:app --host ${HOST} --port ${PORT} --log-level info
+CMD pipenv run uvicorn cogserver:app --host ${HOST} --port ${PORT} --log-level ${LOG_LEVEL}
