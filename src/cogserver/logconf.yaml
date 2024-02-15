@@ -28,12 +28,12 @@ loggers:
       - access
     propagate: no
   root:
-    level: INFO
+    level: DEBUG
     handlers:
       - default
     propagate: no
   rasterio:
-    level: INFO
+    level: DEBUG
     handlers:
       - default
     propagate: no
