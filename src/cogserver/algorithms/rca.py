@@ -16,6 +16,12 @@ class RapidChangeAssessment(BaseAlgorithm):
         description="Threshold (%) to mask changes which is ranged between 0 and 1"
     )
 
+    nodata_value: float = Field(
+        -999.0, ge=-99999, lt=99999,
+        title="No data value",
+        description="If either b1 or b2 has no value, the tool returns 0. Deault is -999."
+    )
+
     # metadata
     input_nbands: int = 2
     input_description: str = "the first two bands will be used to compute change detection."
@@ -28,13 +34,15 @@ class RapidChangeAssessment(BaseAlgorithm):
 
     def __call__(self, img: ImageData) -> ImageData:
         """Rapid change assessment."""
-        b1 = img.array[0].astype("float32")
-        b2 = img.array[1].astype("float32")
+        b1 = img.array[0].astype("float16")
+        b2 = img.array[1].astype("float16")
 
         diff = numpy.abs(b1 - b2)
         total = numpy.abs(b1) + numpy.abs(b2)
 
-        arr = numpy.ma.MaskedArray(diff / total > self.threshold, dtype=self.output_dtype)
+        valid_mask = (b1 > self.nodata_value) & (b2 > self.nodata_value) & (diff / total > self.threshold)
+        arr = numpy.ma.masked_array(valid_mask, dtype=self.output_dtype, )
+
         bnames = img.band_names
         return ImageData(
             arr,
