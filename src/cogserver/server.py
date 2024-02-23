@@ -1,5 +1,6 @@
 from titiler.application import main as default
 from cogserver.dependencies import SignedDatasetPath
+from cogserver.algorithms import algorithms
 from rio_tiler.io import STACReader
 import logging
 from fastapi import FastAPI
@@ -11,7 +12,6 @@ from titiler.mosaic.factory import MosaicTilerFactory
 from titiler.core.errors import DEFAULT_STATUS_CODES, add_exception_handlers
 from titiler.mosaic.errors import MOSAIC_STATUS_CODES
 from titiler.extensions.stac import stacExtension
-
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +40,7 @@ app = FastAPI(
 
 ###############################################################################
 
+
 #################################### COG ######################################
 cog = TilerFactory(
     router_prefix="/cog",
@@ -48,7 +49,8 @@ cog = TilerFactory(
         # cogViewerExtension(),
         stacExtension(),
     ],
-    path_dependency=SignedDatasetPath
+    path_dependency=SignedDatasetPath,
+    process_dependency=algorithms.dependency
 )
 app.include_router(cog.router, prefix="/cog", tags=["Cloud Optimized GeoTIFF"])
 
@@ -59,6 +61,7 @@ from cogserver.extensions import createMosaicJsonExtension
 mosaic = MosaicTilerFactory(
     router_prefix="/mosaicjson",
     path_dependency=SignedDatasetPath,
+    process_dependency=algorithms.dependency,
     extensions=[
         createMosaicJsonExtension()
     ]
@@ -78,6 +81,7 @@ stac = MultiBaseTilerFactory(
         #stacViewerExtension(),
     ],
     path_dependency=SignedDatasetPath,
+    process_dependency=algorithms.dependency,
 )
 
 app.include_router(
@@ -97,12 +101,10 @@ app.include_router(
 
 ############################# Algorithms ######################################
 
-# Algorithms endpoints
-
-algorithms = AlgorithmFactory()
+algorithmsFactory = AlgorithmFactory(supported_algorithm=algorithms)
 
 app.include_router(
-    algorithms.router, tags=["Algorithms"]
+    algorithmsFactory.router, tags=["Algorithms"]
 )
 
 
