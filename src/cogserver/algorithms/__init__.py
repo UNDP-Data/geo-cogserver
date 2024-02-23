@@ -3,6 +3,6 @@ from .rca import RapidChangeAssessment
 
 algorithms: Algorithms = default_algorithms.register(
     {
-        "rapid change assessment": RapidChangeAssessment
+        "rca": RapidChangeAssessment
     }
 )
