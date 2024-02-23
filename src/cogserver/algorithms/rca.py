@@ -40,8 +40,9 @@ class RapidChangeAssessment(BaseAlgorithm):
         diff = numpy.abs(b1 - b2)
         total = numpy.abs(b1) + numpy.abs(b2)
 
-        valid_mask = (b1 > self.nodata_value) & (b2 > self.nodata_value) & (diff / total > self.threshold)
-        arr = numpy.ma.masked_array(valid_mask, dtype=self.output_dtype, )
+        # because actual no data value might be float value, check band value after converting to int type
+        valid_mask = (b1.astype(int) == self.nodata_value) | (b2.astype(int) == self.nodata_value)
+        arr = numpy.ma.masked_array((diff / total > self.threshold), dtype=self.output_dtype, mask=valid_mask)
 
         bnames = img.band_names
         return ImageData(
