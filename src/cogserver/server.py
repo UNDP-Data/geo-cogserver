@@ -1,9 +1,13 @@
+import asyncio
+from typing import List
+
+from starlette.requests import Request
 from titiler.application import main as default
 from cogserver.dependencies import SignedDatasetPath
 from cogserver.algorithms import algorithms
 from rio_tiler.io import STACReader
 import logging
-from fastapi import FastAPI
+from fastapi import FastAPI, Query, Response
 from titiler.core.factory import TilerFactory, MultiBandTilerFactory, MultiBaseTilerFactory, AlgorithmFactory
 from titiler.application import __version__ as titiler_version
 from cogserver.landing import setup_landing
@@ -12,13 +16,13 @@ from titiler.mosaic.factory import MosaicTilerFactory
 from titiler.core.errors import DEFAULT_STATUS_CODES, add_exception_handlers
 from titiler.mosaic.errors import MOSAIC_STATUS_CODES
 from titiler.extensions.stac import stacExtension
+from osgeo import gdal
+
+from cogserver.util import create_vrt_from_urls
 
 logger = logging.getLogger(__name__)
 
 api_settings = default.api_settings
-
-
-
 
 #################################### APP ######################################
 app = FastAPI(
@@ -58,6 +62,7 @@ app.include_router(cog.router, prefix="/cog", tags=["Cloud Optimized GeoTIFF"])
 
 ############################# MosaicJSON ######################################
 from cogserver.extensions import createMosaicJsonExtension
+
 mosaic = MosaicTilerFactory(
     router_prefix="/mosaicjson",
     path_dependency=SignedDatasetPath,
@@ -68,7 +73,6 @@ mosaic = MosaicTilerFactory(
 )
 app.include_router(mosaic.router, prefix="/mosaicjson", tags=["MosaicJSON"])
 
-
 ###############################################################################
 
 ############################# STAC #######################################
@@ -78,7 +82,7 @@ stac = MultiBaseTilerFactory(
     reader=STACReader,
     router_prefix="/stac",
     extensions=[
-        #stacViewerExtension(),
+        # stacViewerExtension(),
     ],
     path_dependency=SignedDatasetPath,
     process_dependency=algorithms.dependency,
@@ -94,8 +98,6 @@ app.include_router(
 ############################# MultiBand #######################################
 
 
-
-
 ###############################################################################
 
 
@@ -108,12 +110,22 @@ app.include_router(
 )
 
 
+############################## VRT ###################################
+
+
+@app.get("/vrt", description="Create a VRT from multiple COGs", tags=["VRT"])
+async def create_vrt(urls: List[str] = Query(..., description="Dataset URLs")):
+    # print(await create_vrt_from_urls(urls=urls))
+    return Response(await create_vrt_from_urls(urls=urls), media_type="application/xml")
+
+
+# app.add_route("/vrt", create_vrt, include_in_schema=True, methods=["GET", "POST"])
+
+
 ###############################################################################
 
 
 ############################# TileMatrixSets ##################################
-
-
 
 
 ###############################################################################
@@ -122,6 +134,7 @@ app.include_router(
 def ping():
     """Health check."""
     return {"ping": "pong!"}
+
 
 setup_landing(app)
 
@@ -137,3 +150,4 @@ if api_settings.cors_origins:
         allow_methods=['*'],
         allow_headers=['*'],
     )
+
