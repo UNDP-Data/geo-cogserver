@@ -5,10 +5,11 @@ from starlette.requests import Request
 from titiler.application import main as default
 from cogserver.dependencies import SignedDatasetPath
 from cogserver.algorithms import algorithms
-from rio_tiler.io import STACReader
+from rio_tiler.io import STACReader, Reader
 import logging
 from fastapi import FastAPI, Query, Response
-from titiler.core.factory import TilerFactory, MultiBandTilerFactory, MultiBaseTilerFactory, AlgorithmFactory
+from titiler.core.factory import TilerFactory, MultiBandTilerFactory, MultiBaseTilerFactory, AlgorithmFactory, \
+    BaseTilerFactory
 from titiler.application import __version__ as titiler_version
 from cogserver.landing import setup_landing
 from starlette.middleware.cors import CORSMiddleware
@@ -16,9 +17,9 @@ from titiler.mosaic.factory import MosaicTilerFactory
 from titiler.core.errors import DEFAULT_STATUS_CODES, add_exception_handlers
 from titiler.mosaic.errors import MOSAIC_STATUS_CODES
 from titiler.extensions.stac import stacExtension
-from osgeo import gdal
 
-from cogserver.util import create_vrt_from_urls
+from cogserver.vrt import VRTExtension, VRTFactory
+
 
 logger = logging.getLogger(__name__)
 
@@ -75,6 +76,8 @@ app.include_router(mosaic.router, prefix="/mosaicjson", tags=["MosaicJSON"])
 
 ###############################################################################
 
+
+
 ############################# STAC #######################################
 # STAC endpoints
 
@@ -113,13 +116,24 @@ app.include_router(
 ############################## VRT ###################################
 
 
-@app.get("/vrt", description="Create a VRT from multiple COGs", tags=["VRT"])
-async def create_vrt(urls: List[str] = Query(..., description="Dataset URLs")):
-    # print(await create_vrt_from_urls(urls=urls))
-    return Response(await create_vrt_from_urls(urls=urls), media_type="application/xml")
-
-
+# @app.get("/vrt", description="Create a VRT from multiple COGs", tags=["VRT"])
+# async def create_vrt(urls: List[str] = Query(..., description="Dataset URLs")):
+#     # print(await create_vrt_from_urls(urls=urls))
+#     return Response(await create_vrt_from_urls(urls=urls), media_type="application/xml")
+#
+#
 # app.add_route("/vrt", create_vrt, include_in_schema=True, methods=["GET", "POST"])
+
+vrt = VRTFactory(
+    router_prefix="/vrt",
+    path_dependency=SignedDatasetPath,
+    extensions=[
+        VRTExtension()
+    ]
+)
+
+app.include_router(vrt.router, prefix="/vrt", tags=["VRT"])
+
 
 
 ###############################################################################
