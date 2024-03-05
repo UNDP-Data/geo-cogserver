@@ -97,19 +97,3 @@ class VRTExtension(FactoryExtension):
                 resamplingAlg=resamplingAlg,
                 resolution=resolution
             ), media_type="application/xml")
-
-
-if __name__ == "__main__":
-    # print(list(range(1, 3)))
-    options = gdal.BuildVRTOptions(
-        separate=True,
-        bandList=list(range(1, 3)),
-        resampleAlg="nearest",
-    )
-    gdal.BuildVRT(
-        "test.vrt",
-        [
-            "/vsicurl/https://undpgeohub.blob.core.windows.net/geo-nightlights/test/SVDNB_npp_d20231229.rade9d_sunfiltered.tif",
-            "/vsicurl/https://undpgeohub.blob.core.windows.net/geo-nightlights/test/SVDNB_npp_d20240101.rade9d_sunfiltered.tif"],
-        options=options
-    )

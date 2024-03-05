@@ -1,15 +1,10 @@
-import asyncio
-from typing import List
-
-from starlette.requests import Request
 from titiler.application import main as default
 from cogserver.dependencies import SignedDatasetPath
 from cogserver.algorithms import algorithms
-from rio_tiler.io import STACReader, Reader
+from rio_tiler.io import STACReader
 import logging
-from fastapi import FastAPI, Query, Response
-from titiler.core.factory import TilerFactory, MultiBandTilerFactory, MultiBaseTilerFactory, AlgorithmFactory, \
-    BaseTilerFactory
+from fastapi import FastAPI
+from titiler.core.factory import TilerFactory, MultiBaseTilerFactory, AlgorithmFactory, \
 from titiler.application import __version__ as titiler_version
 from cogserver.landing import setup_landing
 from starlette.middleware.cors import CORSMiddleware
@@ -115,14 +110,6 @@ app.include_router(
 
 ############################## VRT ###################################
 
-
-# @app.get("/vrt", description="Create a VRT from multiple COGs", tags=["VRT"])
-# async def create_vrt(urls: List[str] = Query(..., description="Dataset URLs")):
-#     # print(await create_vrt_from_urls(urls=urls))
-#     return Response(await create_vrt_from_urls(urls=urls), media_type="application/xml")
-#
-#
-# app.add_route("/vrt", create_vrt, include_in_schema=True, methods=["GET", "POST"])
 
 vrt = VRTFactory(
     router_prefix="/vrt",
