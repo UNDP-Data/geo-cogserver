@@ -4,7 +4,7 @@ from cogserver.algorithms import algorithms
 from rio_tiler.io import STACReader
 import logging
 from fastapi import FastAPI
-from titiler.core.factory import TilerFactory, MultiBaseTilerFactory, AlgorithmFactory, \
+from titiler.core.factory import TilerFactory, MultiBaseTilerFactory, AlgorithmFactory
 from titiler.application import __version__ as titiler_version
 from cogserver.landing import setup_landing
 from starlette.middleware.cors import CORSMiddleware
