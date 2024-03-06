@@ -4,7 +4,7 @@ from cogserver.algorithms import algorithms
 from rio_tiler.io import STACReader
 import logging
 from fastapi import FastAPI
-from titiler.core.factory import TilerFactory, MultiBandTilerFactory, MultiBaseTilerFactory, AlgorithmFactory
+from titiler.core.factory import TilerFactory, MultiBaseTilerFactory, AlgorithmFactory
 from titiler.application import __version__ as titiler_version
 from cogserver.landing import setup_landing
 from starlette.middleware.cors import CORSMiddleware
@@ -13,12 +13,13 @@ from titiler.core.errors import DEFAULT_STATUS_CODES, add_exception_handlers
 from titiler.mosaic.errors import MOSAIC_STATUS_CODES
 from titiler.extensions.stac import stacExtension
 
+from cogserver.vrt import VRTFactory
+from cogserver.extensions.mosaicjson import MosaicJsonExtension
+from cogserver.extensions.vrt import VRTExtension
+
 logger = logging.getLogger(__name__)
 
 api_settings = default.api_settings
-
-
-
 
 #################################### APP ######################################
 app = FastAPI(
@@ -57,19 +58,21 @@ app.include_router(cog.router, prefix="/cog", tags=["Cloud Optimized GeoTIFF"])
 ###############################################################################
 
 ############################# MosaicJSON ######################################
-from cogserver.extensions import createMosaicJsonExtension
+
+
 mosaic = MosaicTilerFactory(
     router_prefix="/mosaicjson",
     path_dependency=SignedDatasetPath,
     process_dependency=algorithms.dependency,
     extensions=[
-        createMosaicJsonExtension()
+        MosaicJsonExtension()
     ]
 )
 app.include_router(mosaic.router, prefix="/mosaicjson", tags=["MosaicJSON"])
 
-
 ###############################################################################
+
+
 
 ############################# STAC #######################################
 # STAC endpoints
@@ -78,7 +81,7 @@ stac = MultiBaseTilerFactory(
     reader=STACReader,
     router_prefix="/stac",
     extensions=[
-        #stacViewerExtension(),
+        # stacViewerExtension(),
     ],
     path_dependency=SignedDatasetPath,
     process_dependency=algorithms.dependency,
@@ -94,8 +97,6 @@ app.include_router(
 ############################# MultiBand #######################################
 
 
-
-
 ###############################################################################
 
 
@@ -108,12 +109,25 @@ app.include_router(
 )
 
 
+############################## VRT ###################################
+
+
+vrt = VRTFactory(
+    router_prefix="/vrt",
+    path_dependency=SignedDatasetPath,
+    extensions=[
+        VRTExtension()
+    ]
+)
+
+app.include_router(vrt.router, prefix="/vrt", tags=["VRT"])
+
+
+
 ###############################################################################
 
 
 ############################# TileMatrixSets ##################################
-
-
 
 
 ###############################################################################
@@ -122,6 +136,7 @@ app.include_router(
 def ping():
     """Health check."""
     return {"ping": "pong!"}
+
 
 setup_landing(app)
 
@@ -137,3 +152,4 @@ if api_settings.cors_origins:
         allow_methods=['*'],
         allow_headers=['*'],
     )
+

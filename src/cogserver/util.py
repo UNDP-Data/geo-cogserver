@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.dependencies.utils import get_parameterless_sub_dependant
 from fastapi import Depends
+
+
 def get_path_dependency(app:FastAPI=None, arg_name=None):
     """
     Extract the first dependency of any kind whose arg name is arg_name
@@ -39,5 +41,3 @@ def replace_dependency(app=None, new_dependency=None, arg_name=None):
                             ),
                         )
                         r.dependencies.extend([depends])
-            #print([[e.call for n in e.query_params if n.name == arg_name] for e in r.dependant.dependencies if e])
-            #print(r.dependencies)
