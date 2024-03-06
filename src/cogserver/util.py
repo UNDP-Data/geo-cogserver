@@ -1,9 +1,7 @@
 from fastapi import FastAPI
 from fastapi.dependencies.utils import get_parameterless_sub_dependant
 from fastapi import Depends
-import asyncio
-from typing import List
-import rasterio
+
 
 def get_path_dependency(app:FastAPI=None, arg_name=None):
     """
@@ -43,15 +41,3 @@ def replace_dependency(app=None, new_dependency=None, arg_name=None):
                             ),
                         )
                         r.dependencies.extend([depends])
-            #print([[e.call for n in e.query_params if n.name == arg_name] for e in r.dependant.dependencies if e])
-            #print(r.dependencies)
-
-
-
-
-if __name__ == "__main__":
-    asyncio.run(create_vrt_from_urls(
-        urls=[
-            "https://undpgeohub.blob.core.windows.net/geo-nightlights/test/SVDNB_npp_d20231229.rade9d_sunfiltered.tif",
-            "https://undpgeohub.blob.core.windows.net/geo-nightlights/test/SVDNB_npp_d20240101.rade9d_sunfiltered.tif"
-        ]))

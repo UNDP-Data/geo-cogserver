@@ -1,24 +1,27 @@
-from dataclasses import dataclass, field
-from typing import  List, Optional
-from cogserver.dependencies import SignedDatasetPaths
-from typing_extensions import Annotated
-from fastapi import Depends, FastAPI, Query
-from titiler.core.factory import BaseTilerFactory, FactoryExtension
+from dataclasses import dataclass
+from typing import List, Optional
+
 from cogeo_mosaic.mosaic import MosaicJSON
-from titiler.core.resources.responses import JSONResponse
+from cogserver.dependencies import SignedDatasetPaths
+from fastapi import Depends, Query
 from pydantic import BaseModel
+from titiler.core.factory import BaseTilerFactory, FactoryExtension
+from titiler.core.resources.responses import JSONResponse
+from typing_extensions import Annotated
 
 urls = Annotated[List[str], Query(..., description="Dataset URLs")]
+
+
 class MosaicJsonCreateItem(BaseModel):
-    #url: List[str] = Query(..., description="Dataset URL")
-    urls:List[str] = urls
+    # url: List[str] = Query(..., description="Dataset URL")
+    urls: List[str] = urls
     minzoom: int = 0
     maxzoom: int = 22
     attribution: str = None
 
 
 @dataclass
-class createMosaicJsonExtension(FactoryExtension):
+class MosaicJsonExtension(FactoryExtension):
 
     def create_mosaic_json(self, urls=None, minzoom=None, maxzoom=None, attribution=None):
         mosaicjson = MosaicJSON.from_urls(urls=urls, minzoom=minzoom, maxzoom=maxzoom, )
@@ -37,7 +40,7 @@ class createMosaicJsonExtension(FactoryExtension):
                 200: {"description": "Return a MosaicJSON from multiple COGs."}},
         )
         def build_mosaicJSON(
-                url = Depends(SignedDatasetPaths),
+                url=Depends(SignedDatasetPaths),
                 minzoom: Optional[int] = 0,
                 maxzoom: Optional[int] = 22,
                 attribution: Optional[str] = None
@@ -59,6 +62,4 @@ class createMosaicJsonExtension(FactoryExtension):
             maxzoom = payload.maxzoom
             attribution = payload.attribution
 
-            return self.create_mosaic_json(urls=url,minzoom=minzoom, maxzoom=maxzoom, attribution=attribution)
-
-
+            return self.create_mosaic_json(urls=url, minzoom=minzoom, maxzoom=maxzoom, attribution=attribution)

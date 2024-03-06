@@ -13,8 +13,9 @@ from titiler.core.errors import DEFAULT_STATUS_CODES, add_exception_handlers
 from titiler.mosaic.errors import MOSAIC_STATUS_CODES
 from titiler.extensions.stac import stacExtension
 
-from cogserver.vrt import VRTExtension, VRTFactory
-
+from cogserver.vrt import VRTFactory
+from cogserver.extensions.mosaicjson import MosaicJsonExtension
+from cogserver.extensions.vrt import VRTExtension
 
 logger = logging.getLogger(__name__)
 
@@ -57,14 +58,14 @@ app.include_router(cog.router, prefix="/cog", tags=["Cloud Optimized GeoTIFF"])
 ###############################################################################
 
 ############################# MosaicJSON ######################################
-from cogserver.extensions import createMosaicJsonExtension
+
 
 mosaic = MosaicTilerFactory(
     router_prefix="/mosaicjson",
     path_dependency=SignedDatasetPath,
     process_dependency=algorithms.dependency,
     extensions=[
-        createMosaicJsonExtension()
+        MosaicJsonExtension()
     ]
 )
 app.include_router(mosaic.router, prefix="/mosaicjson", tags=["MosaicJSON"])
