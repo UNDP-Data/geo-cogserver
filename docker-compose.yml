@@ -5,9 +5,9 @@ services:
     # See https://github.com/developmentseed/titiler/discussions/387
     #platform: linux/amd64
     # enable `image` if you would like to use Docker image from Github package
-    # image: ghcr.io/undp-data/titiler-aks:v0.0.2
+    image: ghcr.io/undp-data/cogserver:latest
     # enable `build` if you would like to build Docker image from source code
-    image: undpgeohub.azurecr.io/cogserver-debug
+#    image: undpgeohub.azurecr.io/cogserver-debug
     build:
       context: .
 
@@ -19,11 +19,11 @@ services:
 #    env_file:
 #      - gdal_rio.env
     ports:
-      - 8000:80
-#    environment:
+      - "8000:8000"
+    environment:
 #      # Application
-#      - HOST=0.0.0.0
-#      - PORT=8000
+      - HOST=0.0.0.0
+      - PORT=8000
 
 
 
