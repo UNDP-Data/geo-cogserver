@@ -9,8 +9,6 @@ from titiler.core.factory import FactoryExtension
 from cogserver.vrt import VRTFactory
 from xml.etree import ElementTree as ET
 
-from titiler.core.resources.responses import XMLResponse
-
 
 def create_vrt_from_urls(
         urls: List[str],
