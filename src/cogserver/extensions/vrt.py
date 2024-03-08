@@ -114,7 +114,7 @@ class VRTExtension(FactoryExtension):
             summary="Create a VRT from multiple COGs",
         )
         async def create_vrt(
-                urls: List[str] = Query(..., description="Dataset URLs"),
+                url: List[str] = Query(..., description="Dataset URLs"),
 
                 srcNoData: List[str] = Query(None,
                                              description="Set nodata values for input bands (different values can be supplied for each band). If the option is not specified, the intrinsic nodata settings on the source datasets will be used (if they exist). The value set by this option is written in the NODATA element of each ComplexSource element. Use a value of None to ignore intrinsic nodata settings on the source datasets."),
@@ -130,14 +130,14 @@ class VRTExtension(FactoryExtension):
                 yRes: Optional[float] = Query(None,
                                               description="Y resolution. Applicable only when `resolution` is `user`")
         ):
-            if len(urls) < 1:
+            if len(url) < 1:
                 return Response("Please provide at least two URLs", status_code=400)
 
             if resolution == "user" and (not xRes or not yRes):
                 return Response("Please provide xRes and yRes for user resolution", status_code=400)
 
             return Response(await create_vrt_from_urls(
-                urls=urls,
+                urls=url,
                 xRes=xRes,
                 yRes=yRes,
                 srcNoData=srcNoData,

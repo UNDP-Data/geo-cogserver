@@ -11,8 +11,8 @@ RUN pipenv run pip install -U pip
 COPY requirements.txt requirements.txt
 RUN pipenv run pip install -r requirements.txt
 COPY src/cogserver cogserver
-#ENV HOST=0.0.0.0
-#ENV PORT=80
+ENV HOST=0.0.0.0
+ENV PORT=8000
 #ENV WEB_CONCURRENCY=1
 #ENV CPL_TMPDIR=/tmp
 #ENV GDAL_CACHEMAX=75%
@@ -25,7 +25,7 @@ COPY src/cogserver cogserver
 #ENV VSI_CACHE=FALSE
 #ENV RIO_TILER_MAX_THREADS=2
 ENV LOG_LEVEL=info
-
+ENV RELOAD=--reload
 
 #CMD pipenv run uvicorn cogserver:app --host ${HOST} --port ${PORT} --log-config cogserver/logconf.yaml
-CMD pipenv run uvicorn cogserver:app --host ${HOST} --port ${PORT} --log-level ${LOG_LEVEL}
+CMD pipenv run uvicorn cogserver:app --host ${HOST} --port ${PORT} --log-level ${LOG_LEVEL} ${RELOAD}
