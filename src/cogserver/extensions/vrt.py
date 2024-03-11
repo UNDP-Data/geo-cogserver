@@ -4,18 +4,19 @@ from typing import List, Literal, Optional
 
 from fastapi import Query, Response
 from osgeo import gdal
+from pydantic import BaseModel
 from titiler.core.factory import FactoryExtension
 from cogserver.vrt import VRTFactory
 from xml.etree import ElementTree as ET
 
 
-async def create_vrt_from_urls(
+def create_vrt_from_urls(
         urls: List[str],
         resolution: Literal["highest", "lowest", "average", "user"] = "average",
-        xRes: float = 0.1,
-        yRes: float = 0.1,
-        vrtNoData: List[str] = 0,
-        srcNoData: List[str] = 0,
+        xRes: float = None,
+        yRes: float = None,
+        vrtNoData: List[int] = None,
+        srcNoData: List[int] = None,
         resamplingAlg: Literal["nearest", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode"] = "nearest",
 
 ):
@@ -27,18 +28,22 @@ async def create_vrt_from_urls(
         resolution (Literal["highest", "lowest", "average", "user"], optional): Resolution to use for the resulting VRT. Defaults to "average".
         xRes (float, optional): X resolution. Defaults to 0.1. Ignored if resolution is not "user".
         yRes (float, optional): Y resolution. Defaults to 0.1. Ignored if resolution is not "user".
-        vrtNoData (List[str], optional): Set nodata values at the VRT band level (different values can be supplied for each band). If the option is not specified, intrinsic nodata settings on the first dataset will be used (if they exist). The value set by this option is written in the NoDataValue element of each VRTRasterBand element. Use a value of None to ignore intrinsic nodata settings on the source datasets. Defaults to 0.
-        srcNoData (List[str], optional): Set nodata values for input bands (different values can be supplied for each band). If the option is not specified, the intrinsic nodata settings on the source datasets will be used (if they exist). The value set by this option is written in the NODATA element of each ComplexSource element. Use a value of None to ignore intrinsic nodata settings on the source datasets. Defaults to 0.
+        vrtNoData (List[int], optional): Set nodata values at the VRT band level (different values can be supplied for each band). If the option is not specified, intrinsic nodata settings on the first dataset will be used (if they exist). The value set by this option is written in the NoDataValue element of each VRTRasterBand element. Use a value of None to ignore intrinsic nodata settings on the source datasets. Defaults to 0.
+        srcNoData (List[int], optional): Set nodata values for input bands (different values can be supplied for each band). If the option is not specified, the intrinsic nodata settings on the source datasets will be used (if they exist). The value set by this option is written in the NODATA element of each ComplexSource element. Use a value of None to ignore intrinsic nodata settings on the source datasets. Defaults to 0.
         resamplingAlg (Literal["nearest", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode"], optional): Resampling algorithm. Defaults to "nearest".
 
     Returns:
         str: VRT XML
     """
     urls = [f"/vsicurl/{url}" for url in urls]
+
     if vrtNoData:
+        vrtNoData = [str(x) for x in vrtNoData]
         vrtNoData = " ".join(vrtNoData)
     if srcNoData:
+        srcNoData = [str(x) for x in srcNoData]
         srcNoData = " ".join(srcNoData)
+
     options = gdal.BuildVRTOptions(
         separate=True,
         xRes=xRes,
@@ -91,6 +96,17 @@ async def create_vrt_from_urls(
             return ET.tostring(file_text, encoding="unicode")
 
 
+class VrtCreationParameters(BaseModel):
+    urls: List[str]
+    xRes: Optional[float] = None
+    yRes: Optional[float] = None
+    srcNoData: Optional[List[int]] = None
+    vrtNoData: Optional[List[int]] = None
+    resamplingAlg: Literal[
+        "nearest", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode"]
+    resolution: Literal["highest", "lowest", "average"]
+
+
 class VRTExtension(FactoryExtension):
     """
     VRT Extension for the VRTFactory
@@ -113,12 +129,12 @@ class VRTExtension(FactoryExtension):
             responses={200: {"description": "Return a VRT from multiple COGs."}},
             summary="Create a VRT from multiple COGs",
         )
-        async def create_vrt(
-                urls: List[str] = Query(..., description="Dataset URLs"),
+        def create_vrt(
+                url: List[str] = Query(..., description="Dataset URLs"),
 
-                srcNoData: List[str] = Query(None,
+                srcNoData: List[int] = Query(None,
                                              description="Set nodata values for input bands (different values can be supplied for each band). If the option is not specified, the intrinsic nodata settings on the source datasets will be used (if they exist). The value set by this option is written in the NODATA element of each ComplexSource element. Use a value of None to ignore intrinsic nodata settings on the source datasets."),
-                vrtNoData: List[str] = Query(None,
+                vrtNoData: List[int] = Query(None,
                                              description="Set nodata values at the VRT band level (different values can be supplied for each band). If the option is not specified, intrinsic nodata settings on the first dataset will be used (if they exist). The value set by this option is written in the NoDataValue element of each VRTRasterBand element. Use a value of None to ignore intrinsic nodata settings on the source datasets."),
                 resamplingAlg: Literal[
                     "nearest", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode"] = Query("nearest",
@@ -130,18 +146,40 @@ class VRTExtension(FactoryExtension):
                 yRes: Optional[float] = Query(None,
                                               description="Y resolution. Applicable only when `resolution` is `user`")
         ):
-            if len(urls) < 1:
+            if len(url) < 1:
                 return Response("Please provide at least two URLs", status_code=400)
 
             if resolution == "user" and (not xRes or not yRes):
                 return Response("Please provide xRes and yRes for user resolution", status_code=400)
 
-            return Response(await create_vrt_from_urls(
-                urls=urls,
+            return Response(create_vrt_from_urls(
+                urls=url,
                 xRes=xRes,
                 yRes=yRes,
                 srcNoData=srcNoData,
                 vrtNoData=vrtNoData,
                 resamplingAlg=resamplingAlg,
                 resolution=resolution
+            ), media_type="application/xml")
+
+        @factory.router.post(
+            "",
+            response_class=Response,
+            responses={200: {"description": "Return a VRT from multiple COGs."}},
+            summary="Create a VRT from multiple COGs",
+        )
+        def create_vrt(
+                payload: VrtCreationParameters,
+        ):
+            urls = payload.urls
+            if len(urls) < 1:
+                return Response("Please provide at least one URL", status_code=400)
+            return Response(create_vrt_from_urls(
+                urls=urls,
+                xRes=payload.xRes,
+                yRes=payload.yRes,
+                srcNoData=payload.srcNoData,
+                vrtNoData=payload.vrtNoData,
+                resamplingAlg=payload.resamplingAlg,
+                resolution=payload.resolution
             ), media_type="application/xml")
