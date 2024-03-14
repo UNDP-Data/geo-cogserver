@@ -8,6 +8,10 @@ from titiler.core.algorithm.base import BaseAlgorithm
 
 
 class RapidChangeAssessment(BaseAlgorithm):
+
+    title: str = "Rapid Change Assessment Tool"
+    description: str = "Quick assessment to detect changes by comparing two bands"
+
     """Rapid change assessment."""
     # parameters
     threshold: float = Field(
