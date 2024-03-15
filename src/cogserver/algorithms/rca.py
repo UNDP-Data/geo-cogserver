@@ -15,13 +15,13 @@ class RapidChangeAssessment(BaseAlgorithm):
     """Rapid change assessment."""
     # parameters
     threshold: float = Field(
-        0.8, ge=0.0, lt=1.0,
+        0.8, ge=0.0, le=1.0,
         title="Threshold(%)",
         description="Threshold (%) to mask changes which is ranged between 0 and 1"
     )
 
     nodata_value: float = Field(
-        -999.0, ge=-99999, lt=99999,
+        -999.0, ge=-99999, le=99999,
         title="No data value",
         description="If either b1 or b2 has no value, the tool returns 0. Deault is -999."
     )
