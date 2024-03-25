@@ -1,3 +1,4 @@
+rio-tiler>=6.4.3
 titiler.application==0.18.0
 asyncpg==0.29.0
 postgis==1.0.4
