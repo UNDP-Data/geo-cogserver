@@ -4,7 +4,7 @@ from cogserver.algorithms import algorithms
 from rio_tiler.io import STACReader
 import logging
 from fastapi import FastAPI
-from titiler.core.factory import TilerFactory, MultiBaseTilerFactory, AlgorithmFactory
+from titiler.core.factory import TilerFactory, MultiBaseTilerFactory, AlgorithmFactory, ColorMapFactory
 from titiler.application import __version__ as titiler_version
 from cogserver.landing import setup_landing
 from starlette.middleware.cors import CORSMiddleware
@@ -131,6 +131,18 @@ app.include_router(vrt.router, prefix="/vrt", tags=["VRT"])
 
 
 ###############################################################################
+
+
+############################# ColorMap ##################################
+# Colormaps endpoints
+cmaps = ColorMapFactory()
+app.include_router(
+    cmaps.router,
+    tags=["ColorMaps"],
+)
+
+###############################################################################
+
 
 @app.get("/health", description="Health Check", tags=["Health Check"])
 def ping():
