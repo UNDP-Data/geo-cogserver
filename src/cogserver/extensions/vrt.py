@@ -57,10 +57,30 @@ def create_vrt_from_urls(
     with tempfile.NamedTemporaryFile() as temp:
         ds = gdal.BuildVRT(temp.name, urls, options=options)
         ds = None
+
+        data_types = [
+            "Byte",
+            "UInt16", "Int16", "CInt16",
+            "UInt32", "Int32", "CInt32"
+            "Float32", "CFloat32",
+            "Float64", "CFloat64"
+        ]
+
         with open(temp.name, "r") as file:
             file_text = ET.fromstring(file.read())
             available_bands = file_text.findall("VRTRasterBand")
+
+            # found the largest data type
+            largest_index = -1
             for source_band in available_bands:
+                data_type = source_band.get("dataType")
+                idx = data_types.index(data_type)
+                if idx > largest_index:
+                    largest_index = idx
+
+            for source_band in available_bands:
+                if largest_index > -1:
+                    source_band.set("dataType", data_types[largest_index])
                 source = None
                 complex_source = source_band.find("ComplexSource")
                 simple_source = source_band.find("SimpleSource")
