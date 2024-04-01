@@ -40,9 +40,38 @@ a) pushing tags
           git push --delete origin v0.0.1 #remote
           git tag -d v0.0.1 #local
        ```
-b) creating a release manually using Github
-    1. open release page
-    2. 
+# local development
+
+The server's config variables are defined in [gdal_rio.env](/gdal_rio.env). By passing this file at runtime to 
+docker-compose the server can be started using:
+
+```commandline
+ docker-compose --env-file gdal_rio.env up --build
+```
+
+[gdal_rio.env](/gdal_rio.env) contains several important environmental variables.
+SOme oare related to teh server/fastapi components while other to the
+GDAL/rasterio machinery
+
+```commandline
+HOST=0.0.0.0
+PORT=8000
+```
+These two variables control the hostname and port number of the local dev server
+when started.
+
+The [Dockerfile](/Dockerfile) contains two more environmental variables that control the behavious of the server
+
+```commandline
+ENV LOG_LEVEL=info
+ENV RELOAD=--reload
+```
+The **RELOAD** if left empty will result in reloading being turned off which is desirable for production
+
+
+
+
+
 
 
 
