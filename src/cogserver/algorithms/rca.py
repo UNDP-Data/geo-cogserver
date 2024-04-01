@@ -20,12 +20,6 @@ class RapidChangeAssessment(BaseAlgorithm):
         description="Threshold (%) to mask changes which is ranged between 0 and 1"
     )
 
-    nodata_value: float = Field(
-        -999.0, ge=-99999, le=99999,
-        title="No data value",
-        description="If either b1 or b2 has no value, the tool returns 0. Deault is -999."
-    )
-
     cloud_mask: bool = Field(
         False,
         title="Cloud mask",
@@ -39,9 +33,10 @@ class RapidChangeAssessment(BaseAlgorithm):
     )
 
     # metadata
-    input_nbands: int = 4
+    input_nbands: int = 2
     input_description: str = "the first two bands will be used to compute change detection. " \
-                             "the last two bands will be used to mask the result. "
+                             "the last two bands will be used to mask the result. " \
+                             "The first two bands are required. "
 
     output_nbands: int = 1
     output_dtype: int = "uint8"
@@ -53,20 +48,26 @@ class RapidChangeAssessment(BaseAlgorithm):
         """Rapid change assessment."""
         b1 = img.array[0].astype("float16")
         b2 = img.array[1].astype("float16")
-        b3 = img.array[2].astype("uint8")
-        b4 = img.array[3].astype("uint8")
 
         diff = numpy.abs(b1 - b2)
         total = numpy.abs(b1) + numpy.abs(b2)
 
-        # because actual no data value might be float value, check band value after converting to int type
-        valid_mask = (b1.astype(int) == self.nodata_value) | (b2.astype(int) == self.nodata_value)
+        # If the difference is more than threshold, return 1. Otherwise return 0
+        data = (diff / total > self.threshold)
 
         # add additional mask condition to remove cloud
-        if self.cloud_mask:
-            valid_mask = valid_mask | (b3 > self.cloud_mask_threshold) | (b4 > self.cloud_mask_threshold)
+        if self.cloud_mask and len(img.array) > 2:
+            # add the third band to mask
+            b3 = img.array[2].astype("uint8")
+            valid_mask = (b3 > self.cloud_mask_threshold)
 
-        arr = numpy.ma.masked_array((diff / total > self.threshold), dtype=self.output_dtype, mask=valid_mask)
+            if len(img.array) > 3:
+                # add the fourth band to mask if available
+                b4 = img.array[3].astype("uint8")
+                valid_mask = valid_mask | (b4 > self.cloud_mask_threshold)
+            arr = numpy.ma.masked_array(data, dtype=self.output_dtype, mask=valid_mask)
+        else:
+            arr = numpy.ma.masked_array(data, dtype=self.output_dtype)
 
         bnames = img.band_names
         return ImageData(
