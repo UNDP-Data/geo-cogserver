@@ -59,6 +59,7 @@ class RapidChangeAssessment(BaseAlgorithm):
          'required': True},
     ]
     input_nbands: int = len(input_bands)
+
     # input_second_image_title: str = 'Second image'
     # input_second_image_description: str = 'The image after the event'
 
