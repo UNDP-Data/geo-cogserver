@@ -16,6 +16,8 @@ services:
        - "./src/cogserver:/opt/server/cogserver"
     env_file:
       - ./gdal_rio.env
+    environment:
+      - RELOAD=--reload
     # the above env file contains the $PORT variable.
     ports:
       - "${PORT}:${PORT}"
