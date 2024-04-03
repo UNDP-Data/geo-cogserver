@@ -49,7 +49,6 @@ class RapidChangeAssessment(BaseAlgorithm):
 
 
     # metadata
-    input_nbands: int = 2
     input_description: str = "The bands that will be used to detect changes"
     input_bands: List = [
         {'title': 'Start date image', 'description': 'The image before the event',  'required':True},
@@ -59,6 +58,7 @@ class RapidChangeAssessment(BaseAlgorithm):
         {'title': 'End date cloud mask', 'description': 'The cloud mask of the image after the event',
          'required': True},
     ]
+    input_nbands: int = len(input_bands)
 
     # input_second_image_title: str = 'Second image'
     # input_second_image_description: str = 'The image after the event'
