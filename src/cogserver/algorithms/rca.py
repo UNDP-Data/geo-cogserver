@@ -45,9 +45,6 @@ class RapidChangeAssessment(BaseAlgorithm):
         description="Inclusive cloud threshold. Specifying a value results in considering all lower values",
         options_descriptions = ['No clouds', 'Almost no clouds', 'Very few clouds', 'Partially cloudy', 'Cloudy', 'Very cloudy' ]
     )
-
-
-
     # metadata
     input_description: str = "The bands that will be used to detect changes"
     input_bands: List = [
@@ -59,9 +56,6 @@ class RapidChangeAssessment(BaseAlgorithm):
          'required': True},
     ]
     input_nbands: int = len(input_bands)
-
-    # input_second_image_title: str = 'Second image'
-    # input_second_image_description: str = 'The image after the event'
 
     output_nbands: int = 1
     output_dtype: int = "int8"
