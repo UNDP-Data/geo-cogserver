@@ -1,6 +1,8 @@
 from typing import Sequence
 import numpy
 from typing import List
+
+import numpy as np
 from pydantic import Field
 from rio_tiler.models import ImageData
 from titiler.core.algorithm.base import BaseAlgorithm
@@ -18,18 +20,18 @@ class RapidChangeAssessment(BaseAlgorithm):
 
     """Rapid change assessment."""
     # parameters
-    # threshold: float = Field(
-    #     default=0, ge=0.0, le=1.0,
-    #     title="Threshold(%)",
-    #     description="Only pixels with change/decrease above this threshold will be supplied"
-    # )
-
-    only_negative: bool = Field(
-        default=True,
-        title='Only negative',
-        description='Compute only pixels whose values have decreased between the two dates'
-
+    threshold: float = Field(
+        default=0.5, ge=0.1, le=1.0,
+        title="Threshold(%)",
+        description="Only pixels with change above this threshold will be returned"
     )
+
+    # only_negative: bool = Field(
+    #     default=False,
+    #     title='Only negative',
+    #     description='Compute only pixels whose values have decreased between the two dates'
+    #
+    # )
 
     # cloud_mask: bool = Field(
     #     False,
@@ -48,12 +50,12 @@ class RapidChangeAssessment(BaseAlgorithm):
     # metadata
     input_description: str = "The bands that will be used to detect changes"
     input_bands: List = [
-        {'title': 'Start date image', 'description': 'The image before the event',  'required':True},
-        {'title': 'End date image', 'description': 'The image after the event',  'required':True},
+        {'title': 'Start date image', 'description': 'The image before the event',  'required':True, 'keywords':['sunfiltered','day', 'night']},
+        {'title': 'End date image', 'description': 'The image after the event',  'required':True, 'keywords':['sunfiltered', 'day', 'night']},
         {'title': 'Start date cloud mask', 'description': 'The cloud mask of the image before the event',
-         'required': True},
+         'required': True, 'keywords':['cloud']},
         {'title': 'End date cloud mask', 'description': 'The cloud mask of the image after the event',
-         'required': True},
+         'required': True, 'keywords':['cloud']},
     ]
     input_nbands: int = len(input_bands)
 
@@ -61,7 +63,9 @@ class RapidChangeAssessment(BaseAlgorithm):
     output_dtype: int = "int8"
     output_min: Sequence[int] = [-100]
     output_max: Sequence[int] = [100]
-    output_description: str = "Pixels/locations whose values have decreased/changed"
+    output_description: str = "Percentage difference of normalized(relative) pixel intensities"
+    output_unit: str = '%'
+    output_colormap_name: str = 'rdylbu'
 
     def __call__(self, img: ImageData) -> ImageData:
         """Rapid change assessment."""
@@ -72,24 +76,17 @@ class RapidChangeAssessment(BaseAlgorithm):
         valid_mask = (img.array[2].astype('uint8') > self.cloud_mask_value) | (img.array[3].astype('uint8') > self.cloud_mask_value)
         diff = b2-b1
         data = diff
-        v = .1
+        v = 0.1
         #v = data.ptp()*.1
-
         datam = (data > -v) & (data < v)
-
-        if self.only_negative:
-            datam |= data>0
-
-
+        if self.threshold:
+            datam |= np.abs(data)< self.threshold
         arr = numpy.ma.masked_array(data*100, dtype=self.output_dtype, mask=valid_mask | datam )
-
-        word = 'changes' if not self.only_negative else 'decrease'
-
         return ImageData(
             arr,
             assets=img.assets,
             crs=img.crs,
             bounds=img.bounds,
-            band_names=[f"Relative {word} in pixels value"],
+            band_names=[f"Relative changes in pixels value"],
         )
 
