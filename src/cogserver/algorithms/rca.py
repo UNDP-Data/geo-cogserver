@@ -21,7 +21,7 @@ class RapidChangeAssessment(BaseAlgorithm):
     """Rapid change assessment."""
     # parameters
     threshold: float = Field(
-        default=0.5, ge=0.1, le=1.0,
+        default=0.1, ge=0.1, le=1.0,
         title="Threshold(%)",
         description="Only pixels with change above this threshold will be returned"
     )
@@ -76,13 +76,8 @@ class RapidChangeAssessment(BaseAlgorithm):
         valid_mask = (img.array[2].astype('uint8') > self.cloud_mask_value) | (img.array[3].astype('uint8') > self.cloud_mask_value)
         diff = b2-b1
         data = diff
-        v = 0.1
-        #v = data.ptp()*.1
-        datam = (data > -v) & (data < v)
+        datam = (data > -self.threshold) & (data < self.threshold)
         valid_mask |= datam
-        if self.threshold:
-            threshold_mask = np.abs(data)< self.threshold
-            valid_mask |= threshold_mask
 
         arr = numpy.ma.masked_array(data*100, dtype=self.output_dtype, mask=valid_mask)
         return ImageData(
