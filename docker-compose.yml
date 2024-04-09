@@ -13,3 +13,5 @@ services:
        - "./src/cogserver:/opt/server/cogserver"
     env_file:
       - .env
+    ports:
+      - 8000:$PORT
