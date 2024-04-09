@@ -80,7 +80,7 @@ class RapidChangeAssessment(BaseAlgorithm):
         #v = data.ptp()*.1
         datam = (data > -v) & (data < v)
         if self.threshold:
-            datam |= np.abs(data)< self.threshold
+            datam = datam | np.abs(data)< self.threshold
         arr = numpy.ma.masked_array(data*100, dtype=self.output_dtype, mask=valid_mask | datam )
         return ImageData(
             arr,
