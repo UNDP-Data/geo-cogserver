@@ -3,24 +3,15 @@ version: '3'
 services:
   cogserver:
     # See https://github.com/developmentseed/titiler/discussions/387
-    #platform: linux/amd64
+    platform: linux/amd64
     # enable `image` if you would like to use Docker image from Github package
     #image: ghcr.io/undp-data/cogserver:latest
-    # enable `build` if you would like to build Docker image from source code
-#    image: undpgeohub.azurecr.io/cogserver-debug
     build:
       context: .
-    container_name: cogserver
     # Enable the following volumes if you want to mount source code to Docker
     volumes:
        - "./src/cogserver:/opt/server/cogserver"
     env_file:
-      - ./gdal_rio.env
-    environment:
-      - RELOAD=--reload
-    # the above env file contains the $PORT variable.
+      - .env
     ports:
       - "${PORT}:${PORT}"
-
-
-

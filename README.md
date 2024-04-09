@@ -42,11 +42,11 @@ a) pushing tags
        ```
 # local development
 
-The server's config variables are defined in [gdal_rio.env](/gdal_rio.env). By passing this file at runtime to 
+The server's config variables are defined in [.env](.env). To create `.env` file, please copy `env.example` file by using the command of `cp .env.example .env`. By passing this file at runtime to 
 docker-compose the server can be started using:
 
 ```commandline
- docker-compose --env-file gdal_rio.env up --build
+ docker-compose --env-file .env up --build
 ```
 
 [gdal_rio.env](/gdal_rio.env) contains several important environmental variables.
