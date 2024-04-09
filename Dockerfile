@@ -11,8 +11,10 @@ RUN pipenv run pip install -U pip
 COPY requirements.txt requirements.txt
 RUN pipenv run pip install -r requirements.txt
 COPY src/cogserver cogserver
-ENV HOST=0.0.0.0
-ENV PORT=8000
-ENV LOG_LEVEL=info
-ENV RELOAD=--reload
+
+ARG HOST=0.0.0.0
+ARG PORT=8000
+ARG LOG_LEVEL=info
+ARG RELOAD=--reload
+
 CMD pipenv run uvicorn cogserver:app --host ${HOST} --port ${PORT} --log-level ${LOG_LEVEL} ${RELOAD}
