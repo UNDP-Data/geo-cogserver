@@ -20,7 +20,7 @@ class RapidChangeAssessment(BaseAlgorithm):
 
     """Rapid change assessment."""
     # parameters
-    threshold: float = Field(
+    threshold: int = Field(
         default=10, ge=10, le=100,
         title="Threshold",
         unit="%",
