@@ -47,6 +47,9 @@ docker-compose the server can be started using:
 
 ```commandline
  docker-compose --env-file .env up --build
+ 
+ 
+ docker compose  run --build --rm --service-ports  cogserver
 ```
 
 [gdal_rio.env](/gdal_rio.env) contains several important environmental variables.
