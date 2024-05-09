@@ -16,5 +16,7 @@ ENV HOST=0.0.0.0
 ENV PORT=8000
 ENV LOG_LEVEL=info
 ENV RELOAD=--reload
-
-CMD pipenv run uvicorn cogserver:app --host ${HOST} --port ${PORT} --log-level ${LOG_LEVEL} ${RELOAD}
+ENV WORKERS=1
+ENV THREADS=1
+#CMD pipenv run uvicorn cogserver:app --host ${HOST} --port ${PORT} --log-level ${LOG_LEVEL} ${RELOAD}
+CMD pipenv run gunicorn cogserver:app -k uvicorn.workers.UvicornWorker --workers=${WORKERS} --threads=${THREADS} --bind=${HOST}:${PORT} --log-level=${LOG_LEVEL} ${RELOAD}
