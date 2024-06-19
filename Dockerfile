@@ -14,7 +14,7 @@ COPY src/cogserver cogserver
 
 ENV HOST=0.0.0.0
 ENV PORT=8000
-ENV LOG_LEVEL=info
+ENV LOG_LEVEL=debug
 ENV RELOAD=--reload
 ENV WORKERS=1
 ENV THREADS=1
