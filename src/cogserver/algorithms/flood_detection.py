@@ -1,10 +1,3 @@
-from typing import List, Sequence
-
-import numpy as np
-from titiler.core.algorithm import BaseAlgorithm
-from rio_tiler.models import ImageData
-from skimage.filters import threshold_otsu
-
 ## Credit: Sashka Warner (https://github.com/sashkaw)
 """
 MIT License
@@ -29,6 +22,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+
+from typing import List, Sequence
+
+import numpy as np
+from titiler.core.algorithm import BaseAlgorithm
+from rio_tiler.models import ImageData
+from skimage.filters import threshold_otsu
+
 
 
 class DetectFlood(BaseAlgorithm):
