@@ -44,12 +44,13 @@ class DetectFlood(BaseAlgorithm):
     input_bands: List = [
         {'title': 'Green band', 'description': 'The green band with the wavelength between 0.53µm - 0.59µm',
          'required': True,
-         'keywords': ['Green band']},
+         'keywords': ['green', 'b3']},
         {'title': 'Short wave infrared band', 'description': 'The SWIR band with wavelength between 0.9μ – 1.7μm',
          'required': True,
-         'keywords': ['Shortwave infrared band']},
+         'keywords': ['swir', 'b6']},
     ]
     input_description: str = "The bands that will be used to make this calculation"
+    output_description: str = "The output is a binary image where 1 represents water and 0 represents non-water"
 
     # Metadata
     input_nbands: int = 2

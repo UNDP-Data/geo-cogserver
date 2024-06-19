@@ -5,6 +5,6 @@ from .flood_detection import DetectFlood
 algorithms: Algorithms = default_algorithms.register(
     {
         "rca": RapidChangeAssessment,
-        "flooding": DetectFlood,
+        "flood_detection": DetectFlood,
     }
 )
