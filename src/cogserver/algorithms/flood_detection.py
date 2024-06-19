@@ -1,4 +1,4 @@
-## Credit: Sashka Warner (https://github.com/sashkaw)
+# Credit: Sashka Warner (https://github.com/sashkaw/flood-data-api)
 """
 MIT License
 
@@ -31,7 +31,6 @@ from rio_tiler.models import ImageData
 from skimage.filters import threshold_otsu
 
 
-
 class DetectFlood(BaseAlgorithm):
     title: str = "Flood detection "
     description: str = "Algorithm to calculate Modified Normalized Difference Water Index (MNDWI), and apply Otsu thresholding algorithm to identify surface water"
@@ -50,7 +49,6 @@ class DetectFlood(BaseAlgorithm):
          'keywords': ['swir', 'b6']},
     ]
     input_description: str = "The bands that will be used to make this calculation"
-    output_description: str = "The output is a binary image where 1 represents water and 0 represents non-water"
 
     # Metadata
     input_nbands: int = 2
@@ -58,6 +56,7 @@ class DetectFlood(BaseAlgorithm):
     output_min: Sequence[int] = [-1]
     output_max: Sequence[int] = [1]
     output_colormap_name: str = 'viridis'
+    output_description: str = "The output is a binary image where 1 represents water and 0 represents non-water"
 
     def __call__(self, img: ImageData, *args, **kwargs):
         # Extract bands of interest
