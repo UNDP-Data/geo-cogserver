@@ -3,17 +3,17 @@ from typing_extensions import Annotated
 from typing import List
 import base64
 
-def parse_signed_url(url:str=None):
 
+def parse_signed_url(url: str = None):
     if '?' in url:
         furl, b64token = url.split('?')
         try:
             decoded_token = base64.b64decode(b64token).decode()
         except Exception:
             decoded_token = b64token
-        decoded_url =  f'{furl}?{decoded_token}'
+        decoded_url = f'{furl}?{decoded_token}'
     else:
-        decoded_url =  f'{url}'
+        decoded_url = f'{url}'
     return decoded_url
 
 
@@ -42,6 +42,7 @@ def SignedDatasetPath(url: Annotated[str, Query(description="Unsigned/signed dat
     """
     return parse_signed_url(url=url)
 
+
 def SignedDatasetPaths(url: Annotated[List[str], Query(description="Unsigned/signed dataset URLs")]) -> str:
     """
         FastAPI dependency function that enables
@@ -61,8 +62,8 @@ def SignedDatasetPaths(url: Annotated[List[str], Query(description="Unsigned/sig
         The returned value is a str representing a RAM stored GDAL VRT file
         which Titiler will use to resolve the request
 
-        Obviously the rasters need to spatially overlap. Additionaly, the VRT can be created with various params
-        (spatial align, resolution, resmapling) that, to some extent can influence the performace of the server
+        Obviously the rasters need to spatially overlap. Additionally, the VRT can be created with various params
+        (spatial align, resolution, resampling) that, to some extent can influence the performance of the server
 
     """
     decoded_urls = list()
