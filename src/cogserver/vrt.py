@@ -1,13 +1,13 @@
 from fastapi import APIRouter
-from titiler.core.factory import MultiBaseTilerFactory
+from titiler.core.factory import TilerFactory
 
 
 router = APIRouter()
 
 
-class VRTFactory(MultiBaseTilerFactory):
+class VRTFactory(TilerFactory):
     """
-    Override the MultiBaseTilerFactory to add a VRT endpoint
+    Override the TilerFactory to add a VRT endpoint
     Empty register_routes method to override all routes and have no routes
     """
 
