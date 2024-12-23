@@ -5,7 +5,7 @@ from cogeo_mosaic.mosaic import MosaicJSON
 from cogserver.dependencies import SignedDatasetPaths
 from fastapi import Depends, Query
 from pydantic import BaseModel
-from titiler.core.factory import BaseTilerFactory, FactoryExtension
+from titiler.core.factory import TilerFactory, FactoryExtension
 from titiler.core.resources.responses import JSONResponse
 from typing_extensions import Annotated
 
@@ -29,8 +29,8 @@ class MosaicJsonExtension(FactoryExtension):
             mosaicjson.attribution = attribution
         return mosaicjson
 
-    # Register method is mandatory and must take a BaseTilerFactory object as input
-    def register(self, factory: BaseTilerFactory):
+    # Register method is mandatory and must take a TilerFactory object as input
+    def register(self, factory: TilerFactory):
         @factory.router.get(
             "/build",
             response_model=MosaicJSON,
