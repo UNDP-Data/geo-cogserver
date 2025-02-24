@@ -48,7 +48,7 @@ jobs:
       - name: Create release
         if: ${{ contains(steps.meta.outputs.tags, ':v') }}
         id: create_release
-        uses: ncipollo/release-action@v1.14.0
+        uses: ncipollo/release-action@v1.16.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
