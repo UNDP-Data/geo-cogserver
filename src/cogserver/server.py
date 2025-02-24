@@ -3,6 +3,7 @@ from cogserver.dependencies import SignedDatasetPath
 from cogserver.algorithms import algorithms
 from rio_tiler.io import STACReader
 import logging
+import rasterio
 from fastapi import FastAPI
 from titiler.core.factory import TilerFactory, MultiBaseTilerFactory, AlgorithmFactory, ColorMapFactory
 from titiler.application import __version__ as titiler_version
@@ -147,7 +148,15 @@ app.include_router(
 @app.get("/health", description="Health Check", tags=["Health Check"])
 def ping():
     """Health check."""
-    return {"ping": "pong!"}
+    return {
+        "versions": {
+            "titiler": titiler_version,
+            "rasterio": rasterio.__version__,
+            "gdal": rasterio.__gdal_version__,
+            "proj": rasterio.__proj_version__,
+            "geos": rasterio.__geos_version__,
+        }
+    }
 
 
 setup_landing(app)
