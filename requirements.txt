@@ -2,7 +2,7 @@ rio-tiler>=7.4.0
 titiler.application==0.21.1
 asyncpg==0.30.0
 postgis==1.0.4
-uvicorn==0.34.0
+uvicorn==0.34.2
 boto3
 pyyaml
 gunicorn
