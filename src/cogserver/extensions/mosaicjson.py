@@ -38,6 +38,7 @@ class MosaicJsonExtension(FactoryExtension):
             response_class=JSONResponse,
             responses={
                 200: {"description": "Return a MosaicJSON from multiple COGs."}},
+            operation_id=f"mosaicjson_get_build"
         )
         def build_mosaicJSON(
                 url=Depends(SignedDatasetPaths),
@@ -55,6 +56,7 @@ class MosaicJsonExtension(FactoryExtension):
             response_class=JSONResponse,
             responses={
                 200: {"description": "Return a MosaicJSON from multiple COGs."}},
+            operation_id=f"mosaicjson_post_build"
         )
         def build_mosaicJSON(payload: MosaicJsonCreateItem):
             url = SignedDatasetPaths(payload.urls)

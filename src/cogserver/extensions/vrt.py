@@ -148,6 +148,7 @@ class VRTExtension(FactoryExtension):
             response_class=Response,
             responses={200: {"description": "Return a VRT from multiple COGs."}},
             summary="Create a VRT from multiple COGs",
+            operation_id=f"vrt_get"
         )
         def create_vrt(
                 url: List[str] = Query(..., description="Dataset URLs"),
@@ -187,6 +188,7 @@ class VRTExtension(FactoryExtension):
             response_class=Response,
             responses={200: {"description": "Return a VRT from multiple COGs."}},
             summary="Create a VRT from multiple COGs",
+            operation_id=f"vrt_post"
         )
         def create_vrt(
                 payload: VrtCreationParameters,
