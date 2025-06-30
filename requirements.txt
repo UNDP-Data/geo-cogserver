@@ -1,5 +1,5 @@
 rio-tiler>=7.7.1
-titiler.application==0.22.1
+titiler.application==0.22.3
 asyncpg==0.30.0
 postgis==1.0.4
 uvicorn==0.34.2
