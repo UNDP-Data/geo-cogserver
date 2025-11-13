@@ -1,5 +1,9 @@
 from typing import Annotated, Literal, Optional
+<<<<<<< HEAD
 from fastapi.responses import FileResponse, Response
+=======
+from fastapi.responses import FileResponse
+>>>>>>> 3ac90e7 (dependencies in env)
 from titiler.application import main as default
 from cogserver.dependencies import SignedDatasetPath
 from cogserver.algorithms import algorithms
