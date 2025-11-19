@@ -27,6 +27,7 @@ def compute_zonal_stats(polygons_url, raster_url):
     # POLYGONS AND RASTER MUST OVERLAP IN THE SAME COORDINATE SYSTEM
     polygons = gpd.read_file(polygons_url)
 
+<<<<<<< HEAD
     ds = exact_extract(raster_url, polygons, ['sum', 'mean', 'count'], include_geom='True', output='pandas', progress=True)
 
     buffer = BytesIO() # Create in-memory BytesIO object (stream) that is similar to a file but is stored in RAM instead of disk
@@ -37,6 +38,15 @@ def compute_zonal_stats(polygons_url, raster_url):
     buffer.close()
     return file_bytes
 
+=======
+    ds = exact_extract(raster_url, polygons, ['sum', 'mean', 'count'], include_geom = 'True', output = 'pandas', progress = True) # Creates pandas df
+    file = "zonal_stats3.fgb"
+    ds.to_file(file, driver = "FlatGeoBuf")
+    print("Created new zonal statistics file.")
+>>>>>>> 6668d6c (URLs zonal stats)
+
+    # figure out how to stream a file response over to the cloud?
+    return file
 
 if __name__ == "__main__":
     compute_zonal_stats(sys.argv[1], sys.argv[2])
