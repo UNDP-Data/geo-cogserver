@@ -28,6 +28,7 @@ def compute_zonal_stats(polygons_url, raster_url):
     polygons = gpd.read_file(polygons_url)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     ds = exact_extract(raster_url, polygons, ['sum', 'mean', 'count'], include_geom='True', output='pandas', progress=True)
 
     buffer = BytesIO() # Create in-memory BytesIO object (stream) that is similar to a file but is stored in RAM instead of disk
@@ -38,15 +39,33 @@ def compute_zonal_stats(polygons_url, raster_url):
     buffer.close()
     return file_bytes
 
+<<<<<<< HEAD
 =======
     ds = exact_extract(raster_url, polygons, ['sum', 'mean', 'count'], include_geom = 'True', output = 'pandas', progress = True) # Creates pandas df
     file = "zonal_stats3.fgb"
     ds.to_file(file, driver = "FlatGeoBuf")
     print("Created new zonal statistics file.")
 >>>>>>> 6668d6c (URLs zonal stats)
+=======
+    ds = exact_extract(raster_url, polygons, ['sum', 'mean', 'count'], include_geom='True', output='pandas', progress=True)
+>>>>>>> 6606401 (Streaming file instead of rwiting to disk)
 
-    # figure out how to stream a file response over to the cloud?
-    return file
+    buffer = BytesIO() # Create in-memory BytesIO object (stream) that is similar to a file but is stored in RAM instead of disk
+    ds.to_file(buffer, driver="FlatGeoBuf") # Write FGB to the in-memory buffer
+    
+    buffer.seek(0)  # Go back to start of buffer
+    file_bytes = buffer.read() # Read bytes from buffer
+    buffer.close()
+    return file_bytes
+    """
+        # Original behavior: write to disk
+        file = "zonal_stats5.fgb"
+        ds.to_file(file, driver="FlatGeoBuf")
+        print("Created new zonal statistics file on disk.")
+        return file
+    """
+=======
+>>>>>>> 80bf1f7 (Streaming file instead of writing to disk)
 
 if __name__ == "__main__":
     compute_zonal_stats(sys.argv[1], sys.argv[2])

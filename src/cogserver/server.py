@@ -1,9 +1,13 @@
 from typing import Annotated, Literal, Optional
 <<<<<<< HEAD
+<<<<<<< HEAD
 from fastapi.responses import FileResponse, Response
 =======
 from fastapi.responses import FileResponse
 >>>>>>> 3ac90e7 (dependencies in env)
+=======
+from fastapi.responses import FileResponse, Response
+>>>>>>> 6606401 (Streaming file instead of rwiting to disk)
 from titiler.application import main as default
 from cogserver.dependencies import SignedDatasetPath
 from cogserver.algorithms import algorithms
@@ -78,6 +82,13 @@ def zonal_stats(polygon_url = "", raster_url = ""):
             "Content-Disposition": 'attachment; filename="zonal_stats.fgb"'
         }
     )
+<<<<<<< HEAD
+=======
+    
+    # OLD WAY (writes to disk first):
+    # zonal_stats_file = compute_zonal_stats(polygon_url, raster_url)
+    # return FileResponse(path=zonal_stats_file, filename="zonal_stats.fgb")
+>>>>>>> 6606401 (Streaming file instead of rwiting to disk)
 
 
 #################################### COG ######################################
