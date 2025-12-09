@@ -1,7 +1,9 @@
 from typing import Annotated, Literal, Optional
+from fastapi.responses import FileResponse, Response
 from titiler.application import main as default
 from cogserver.dependencies import SignedDatasetPath
 from cogserver.algorithms import algorithms
+from cogserver.algorithms.zonal_stats import compute_zonal_stats
 from rio_tiler.io import STACReader
 from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
@@ -57,6 +59,21 @@ TITILER_CONFORMS_TO = {
 }
 
 ###############################################################################
+
+### does titiler have an extension for zonal stats? prob not
+@app.get("/zonal_stats")
+def zonal_stats(polygon_url = "", raster_url = ""):
+    # Get file bytes directly from memory (no disk write)
+    file_bytes = compute_zonal_stats(polygon_url, raster_url)
+    
+    # Return bytes directly as a file download
+    return Response(
+        content=file_bytes,
+        media_type="application/octet-stream",
+        headers={
+            "Content-Disposition": 'attachment; filename="zonal_stats.fgb"'
+        }
+    )
 
 
 #################################### COG ######################################
