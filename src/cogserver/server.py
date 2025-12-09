@@ -60,7 +60,7 @@ TITILER_CONFORMS_TO = {
 
 ###############################################################################
 
-### does titiler have an extension for zonal stats? prob not
+# Zonal Statics Endpoint
 @app.get("/zonal_stats")
 def zonal_stats(polygon_url = "", raster_url = ""):
     # Get file bytes directly from memory (no disk write)
